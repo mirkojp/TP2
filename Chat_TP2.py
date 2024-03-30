@@ -1,7 +1,6 @@
 from openai import OpenAI
 
 
-
 client = OpenAI()
 def chat_with_gpt(user_query):
     # context = "Este es el contexto que deseas proporcionar al modelo."  # Puedes personalizar el contexto según tus necesidades
@@ -28,16 +27,22 @@ def chat_with_gpt(user_query):
 
 def main():
     while True:
-        user_query = input("Ingrese su consulta: ")
-        if user_query.strip() == "":
-            print("Por favor, ingrese una consulta válida.")
-            continue
+        try:
+            user_query = input("Ingrese su consulta: ")
+            if user_query.strip() == "":
+                print("Por favor, ingrese una consulta válida.")
+                continue
 
-        print("You:", user_query)
+            print("You:", user_query)
 
-        response = chat_with_gpt(user_query)
-        print("chatGPT:", response)
-
+            response = chat_with_gpt(user_query)
+            if response is not None:
+                print("chatGPT:", response)
+        except KeyboardInterrupt:
+            print("\nSaliendo del programa.")
+            break
+        except Exception as e:
+            print("Error:", e)
 
 if __name__ == "__main__":
     main()
