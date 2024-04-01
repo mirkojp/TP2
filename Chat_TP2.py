@@ -53,30 +53,33 @@ def chat_with_gpt(user_query, conversation):  # Conversation boolean
 
     # Define a placeholder for user's task (if applicable)
     usertask = " "
+    try:
+        # Generate response from the GPT-3 model
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo-0125",
+            messages=[
+                {"role": "system", "content": context},  # System context/message
+                {"role": "user", "content": usertask},  # User task (if applicable)
+                {"role": "user", "content": user_query},  # User query
+            ],
+            temperature=1,
+            max_tokens=150,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0,
+        )
 
-    # Generate response from the GPT-3 model
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo-0125",
-        messages=[
-            {"role": "system", "content": context},  # System context/message
-            {"role": "user", "content": usertask},  # User task (if applicable)
-            {"role": "user", "content": user_query},  # User query
-        ],
-        temperature=1,
-        max_tokens=150,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0,
-    )
+        # Append the user query and GPT response to conversation history
+        # Conditional working, or not, on conversation mode
+        if conversation:
+            conversation_history.append(user_query)
+            conversation_history.append(response.choices[0].message.content)
 
-    # Append the user query and GPT response to conversation history
-    # Conditional working, or not, on conversation mode
-    if conversation:
-        conversation_history.append(user_query)
-        conversation_history.append(response.choices[0].message.content)
-
-    # Return the response from the GPT-3 model
-    return response.choices[0].message.content
+        # Return the response from the GPT-3 model
+        return response.choices[0].message.content
+    except SPECIFIC_EXCEPTIONS as e:
+        print("Error durante la conversación con GPT:", e)
+        return None
 
 
 def handle_user_interaction(conversation):
@@ -91,7 +94,6 @@ def handle_user_interaction(conversation):
     Returns:
         None
     """
-
     while True:
         try:
             # Prompt user for input
