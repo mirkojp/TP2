@@ -49,10 +49,7 @@ def chat_with_gpt(user_query, conversation):  # Conversation boolean
     # Global variable declaration to access the conversation history
 
     # Conditional working, or not, on conversation mode
-    if conversation == 1:
-        context = " ".join(conversation_history)  # Use conversation history as context
-    else:
-        context = " "
+    context = " ".join(conversation_history) if conversation else ""
 
     # Define a placeholder for user's task (if applicable)
     usertask = " "
@@ -74,7 +71,7 @@ def chat_with_gpt(user_query, conversation):  # Conversation boolean
 
     # Append the user query and GPT response to conversation history
     # Conditional working, or not, on conversation mode
-    if conversation == 1:
+    if conversation:
         conversation_history.append(user_query)
         conversation_history.append(response.choices[0].message.content)
 
